@@ -10,7 +10,7 @@ from itertools import chain, permutations, product
 
 #import matplotlib.patches as patches
 #from sklearn import metrics
-import functions_pp
+from .. import functions_pp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -55,7 +55,7 @@ mpl.rcParams['figure.titlesize'] = 'medium'
 
 
 def get_scores_improvement(m_splits, fc, s, lag, metric=None):
-import stat_models
+    from . import stat_models
     import warnings
     warnings.filterwarnings("ignore")
     m = m_splits[f'split_{s}']
@@ -1107,7 +1107,7 @@ def valid_figures(dict_merge_all, line_dim='model', group_line_by=None,
                             RV_bin = df_RV['RV_binary']
                             clim = RV_bin.values[RV_bin==1].size / RV_bin.size
                             if metric == 'Accuracy':
-                                import validation as valid
+                                from . import validation as valid
 
                                 # threshold upper 3/4 of above clim
                                 threshold = int(100 * (1 - 0.75*clim))
@@ -1161,5 +1161,3 @@ def valid_figures(dict_merge_all, line_dim='model', group_line_by=None,
     g.fig.subplots_adjust(wspace=wspace, hspace=hspace)
 
     return g.fig
-
-

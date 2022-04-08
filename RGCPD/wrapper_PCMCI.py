@@ -197,8 +197,7 @@ def run_tigramite(pcmci, path_outsub2, s, tigr_function_call='run_pcmci',
     # print @ 3 alpha level values:
     alphas = [.1, .05, .01]
     for a in alphas:
-        pcmci.print_significant_links(p_matrix=results['p_matrix'],
-                                       q_matrix=results['q_matrix'],
+        pcmci.print_significant_links(p_matrix=results['q_matrix'],
                                        val_matrix=results['val_matrix'],
                                        alpha_level=a)
 
@@ -252,16 +251,16 @@ def get_links_pcmci(pcmci_dict, pcmci_results_dict, alpha_level, FDR_cv='fdr_bh'
             pq_matrix_s = results['q_matrix']
         else:
             pq_matrix_s = results['p_matrix']
-        sig = pcmci.return_significant_links(pq_matrix_s,
-                                             val_matrix=results['val_matrix'],
-                                             alpha_level=alpha_level,
-                                             include_lagzero_links=True)
+        
+        link_matrix = pq_matrix_s < alpha_level
 
-        all_parents = sig['link_dict']
-        link_matrix = sig['link_matrix']
+        # return_significant_links deprecated function in Tigramite
+        # sig = pcmci.return_significant_links(pq_matrix_s,
+        #                                      val_matrix=results['val_matrix'],
+        #                                      alpha_level=alpha_level,
+        #                                      include_lagzero_links=True)        
 
-
-        parents_dict[s] = all_parents, pcmci.var_names, link_matrix
+        parents_dict[s] = pcmci.var_names, link_matrix
 
     else:
         pass
@@ -273,7 +272,7 @@ def get_df_links(parents_dict, variable: str=None):
     splits = np.array(list(parents_dict.keys()))
     df_links_s = np.zeros( (splits.size) , dtype=object)
     for s in range(splits.size):
-        var_names, link_matrix = parents_dict[s][1:]
+        var_names, link_matrix = parents_dict[s]
         if variable is None:
             var_idx = 0
         else:
@@ -467,7 +466,7 @@ def print_pc_alphas_summ_from_txt(filepath_txt=str, variable=str):
     return pc_alpha
 
 def store_ts(df_data, df_sum, dict_ds, filename): # outdic_precur, add_spatcov=True
-    import functions_pp
+    from . import functions_pp
 
     df_data_to_store = df_data
     df_sum_to_store = df_sum
@@ -777,6 +776,3 @@ def df_data_Parcorr(df_data, z_keys=[str, list], keys: list=None, target: str=No
     return vals, pvals
 
 #%%
-
-
-
